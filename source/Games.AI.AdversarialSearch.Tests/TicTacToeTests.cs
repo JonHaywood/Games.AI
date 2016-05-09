@@ -31,6 +31,21 @@ namespace Games.AI.AdversarialSearch.Tests
         }
 
         [TestMethod, TestCategory(Category)]
+        public void Board_SerializesCorrectly()
+        {
+            var board = new Board();
+            board[1, 0] = BoardPlayer.Player2;
+            board[2, 0] = BoardPlayer.Player1;
+
+            var serialized = Board.Serialize(board);
+            var deserializedBoard = Board.Deserialize(serialized);
+
+            Assert.AreEqual(deserializedBoard[0, 0], BoardPlayer.NoPlayer);
+            Assert.AreEqual(deserializedBoard[1, 0], BoardPlayer.Player2);
+            Assert.AreEqual(deserializedBoard[2, 0], BoardPlayer.Player1);
+        }
+
+        [TestMethod, TestCategory(Category)]
         public void Board_ValidMoves_AreCorrectForEmptyBoard()
         {
             var board = new Board();

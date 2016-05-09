@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Games.AI.AdversarialSearch
 {
@@ -8,11 +9,16 @@ namespace Games.AI.AdversarialSearch
         private readonly Dictionary<IState, double> transpositionTable = new Dictionary<IState, double>();
 
         private IProblem Problem { get; set; }
+        private AlgorithmStatistics Statistics { get; set; }
+
+        public bool UseTranspositionTable { get; set; }
 
         public AlgorithmResult SolveForBestAction(IProblem problem, IState state)
         {
             Problem = problem;
+            Statistics = new AlgorithmStatistics();
             transpositionTable.Clear();
+            var stopwach = Stopwatch.StartNew();
 
             var v = double.NegativeInfinity;
             var alpha = double.NegativeInfinity;
@@ -25,6 +31,8 @@ namespace Games.AI.AdversarialSearch
             var successors = Problem.GetSuccessors(state);
             foreach (var successor in successors)
             {
+                Statistics.VisitedStateCount++;
+
                 var vTemp = Math.Max(v, MinValue(successor.ResultingState, alpha, beta));
                 if (vTemp > v)
                 {
@@ -36,11 +44,12 @@ namespace Games.AI.AdversarialSearch
                 alpha = Math.Max(alpha, v);
             }
 
-            if (action == null)
-                return new AlgorithmResult(false, null, null);
+            stopwach.Stop();
+            Statistics.ElapsedTimeInSeconds = new TimeSpan(stopwach.ElapsedTicks).TotalSeconds;
 
-            var stats = new AlgorithmStatistics();
-            return new AlgorithmResult(true, action, stats);
+            return action == null 
+                ? new AlgorithmResult(false, null, Statistics) 
+                : new AlgorithmResult(true, action, Statistics);
         }
 
         /// <summary>
@@ -55,15 +64,24 @@ namespace Games.AI.AdversarialSearch
             if (Problem.IsTerminalState(state))
                 return Problem.GetUtilityValue(state);
 
+            if (UseTranspositionTable && transpositionTable.ContainsKey(state))
+                return transpositionTable[state];
+
             var v = double.NegativeInfinity;
             var successors = Problem.GetSuccessors(state);
             foreach (var successor in successors)
             {
+                Statistics.VisitedStateCount++;
+
                 v = Math.Max(v, MinValue(successor.ResultingState, alpha, beta));
                 if (v >= beta)
                     return v;
                 alpha = Math.Max(alpha, v);
             }
+
+            if (UseTranspositionTable && !transpositionTable.ContainsKey(state))
+                transpositionTable[state] = v;
+
             return v;
         }
 
@@ -79,15 +97,24 @@ namespace Games.AI.AdversarialSearch
             if (Problem.IsTerminalState(state))
                 return Problem.GetUtilityValue(state);
 
+            if (UseTranspositionTable && transpositionTable.ContainsKey(state))
+                return transpositionTable[state];
+
             var v = double.PositiveInfinity;
             var successors = Problem.GetSuccessors(state);
             foreach (var successor in successors)
             {
+                Statistics.VisitedStateCount++;
+
                 v = Math.Min(v, MaxValue(successor.ResultingState, alpha, beta));
                 if (v <= alpha)
                     return v;
                 beta = Math.Min(beta, v);
             }
+
+            if (UseTranspositionTable && !transpositionTable.ContainsKey(state))
+                transpositionTable[state] = v;
+
             return v;
         }
     }

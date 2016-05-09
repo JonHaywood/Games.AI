@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -105,6 +106,8 @@ namespace Games.AI.AdversarialSearch.Tests
                 var result = algorithm.SolveForBestAction(problem, board);
                 var action = (Move)result.Action;
                 board = action.Execute(board);
+
+                Debug.WriteLine(result.Statistics);
             }
 
             bool didComputerWinOrDraw = board.Evaluate(computerPlayer) || board.IsFull();

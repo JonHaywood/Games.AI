@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,6 +33,27 @@ namespace Games.AI.AdversarialSearch.Tests
             var board2 = board1.Clone();
 
             Assert.AreEqual(board1, board2);
+        }
+
+        [TestMethod, TestCategory(Category)]
+        public void Board_HashCodeWorksCorrectly()
+        {
+            var board1 = new Board();
+            var board2 = (Board)board1.Clone();
+            var board3 = Board.CreateEmptyBoard();
+            var expected = 1;
+            var dictionary = new Dictionary<Board, int>
+            {
+                {board1, expected}
+            };
+
+            int value;
+            var result1 = dictionary.TryGetValue(board2, out value); // board 1 and 2 are the equivalent, should be able get value out using either
+            var result2 = dictionary.TryGetValue(board3, out value); // board 3 is different, should NOT be able to get value
+
+            Assert.IsTrue(result1);
+            Assert.IsFalse(result2);
+            Assert.AreEqual(expected, dictionary[board2]);         
         }
 
         [TestMethod, TestCategory(Category)]
@@ -120,7 +141,7 @@ namespace Games.AI.AdversarialSearch.Tests
         }
 
         [TestMethod, TestCategory(Category)]
-        public void Board_ValidMove_FindsJumpCorrectly()
+        public void Board_ValidMove_FindsAvailableJumpCorrectly()
         {
             var board = Board.CreateEmptyBoard();
             board["a1"].Piece = new Piece(BoardPlayer.Player1);
@@ -211,7 +232,7 @@ namespace Games.AI.AdversarialSearch.Tests
             board["f2"].Piece = new Piece(BoardPlayer.Player1);
 
             IProblem problem = new CheckersProblem(computerPlayer: BoardPlayer.Player1);
-            IAlgorithm algorithm = new IterativeDeepeningWithABPruningAlgorithm(50);
+            IAlgorithm algorithm = new MinimaxWithAlphaBetaPruningAlgorithm{UseTranspositionTable = true};
 
             var result = algorithm.SolveForBestAction(problem, board);
             var move = (Move)result.Action;

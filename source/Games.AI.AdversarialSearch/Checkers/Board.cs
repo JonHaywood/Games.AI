@@ -5,7 +5,7 @@ using System.Linq;
 namespace Games.AI.AdversarialSearch.Checkers
 {    
     [Serializable]
-    public class Board : ICloneable, IEnumerable<Square>, IState
+    public class Board : BaseObject, ICloneable, IEnumerable<Square>, IState
     {
         public const int BoardSize = 8;
         private static readonly int[][] DiagonalDirections =
@@ -186,6 +186,18 @@ namespace Games.AI.AdversarialSearch.Checkers
                     return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
+        public override int GetHashCode()
+        {
+            // see http://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order
+            return squares.Aggregate(19, (current, square) => current*31 + square.GetHashCode());
         }
 
         /// <summary>

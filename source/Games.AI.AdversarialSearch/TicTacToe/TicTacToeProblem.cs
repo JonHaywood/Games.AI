@@ -12,10 +12,12 @@ namespace Games.AI.AdversarialSearch.TicTacToe
         {
             ComputerPlayer = computerPlayer;
             PlayerWithFirstMove = playerWithFirstMove;
+            MaxLevel = int.MaxValue; // there is no max level
         }
 
+        public int MaxLevel { get; set; }
         public BoardPlayer ComputerPlayer { get; set; }
-        public BoardPlayer PlayerWithFirstMove { get; set; }
+        public BoardPlayer PlayerWithFirstMove { get; private set; }
 
         public double GetUtilityValue(IState state)
         {
@@ -51,6 +53,7 @@ namespace Games.AI.AdversarialSearch.TicTacToe
             {
                 var move = new Move(moveIndex, player);
                 var newBoard = move.Execute(board);
+                newBoard.Level++;
                 successors.Add(new Successor(move, newBoard));
             }
 

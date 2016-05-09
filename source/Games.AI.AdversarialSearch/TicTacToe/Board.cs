@@ -20,17 +20,20 @@ namespace Games.AI.AdversarialSearch.TicTacToe
         public Board()
         {
             Printer = new BoardPrinter();
-            board = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };       
+            board = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            Level = 0;
         }
 
         /// <summary>
         /// Constructor - used for cloning.
         /// </summary>
         /// <param name="internalBoard">The internal board.</param>
+        /// <param name="level">The state level.</param>
         /// <param name="printer">The printer.</param>
-        private Board(int[] internalBoard, IBoardPrinter printer = null)
+        private Board(int[] internalBoard, int level, IBoardPrinter printer = null)
         {
             Printer = printer ?? new BoardPrinter();
+            Level = level;
             board = internalBoard;
         }
 
@@ -62,6 +65,11 @@ namespace Games.AI.AdversarialSearch.TicTacToe
         /// Gets or sets the board printer.
         /// </summary>
         public IBoardPrinter Printer { get; set; }
+
+        /// <summary>
+        /// Gets or sets the level.
+        /// </summary>
+        public int Level { get; set; }
 
         /// <summary>
         /// Boolean based on if there is a player on the board.
@@ -187,7 +195,7 @@ namespace Games.AI.AdversarialSearch.TicTacToe
         /// </returns>
         public object Clone()
         {
-            var newBoard = new Board(board, Printer);            
+            var newBoard = new Board(board, Level, Printer);            
             return newBoard;
         }
 

@@ -6,5 +6,6 @@ namespace Games.AI.AdversarialSearch
     /// </summary>
     public interface IState
     {
+        int Level { get; }
     }
 }

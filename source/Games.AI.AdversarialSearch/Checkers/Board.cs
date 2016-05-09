@@ -15,31 +15,19 @@ namespace Games.AI.AdversarialSearch.Checkers
             new [] {-1, 1}, 
             new [] { 1, 1}
         };
-        private Square[] squares;
+        private readonly Square[] squares;
 
         /// <summary>
-        /// Creates a board with no players.
+        /// Initializes a new instance of the <see cref="Board"/> class with an empty board.
         /// </summary>
-        /// <returns></returns>
-        public static Board CreateEmptyBoard()
-        {
-            var board = new Board();
-            foreach (Square square in board.squares)
-            {
-                square.Piece = null;
-            }
-            return board;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Board"/> class.
-        /// </summary>
-        public Board()
+        /// <param name="setStartingPositions">If set to <c>true</c> then player starting pieces will be set.</param>
+        public Board(bool setStartingPositions = false)
         {     
             Printer = new BoardPrinter();
+            Level = 0;
             var tempSquares = new List<Square>(BoardSize);  
 
-            // create an empty board
+            // create a new board with pieces set in starting positions
             for (int i = 0; i < BoardSize; i++) // rows
             {
                 bool isBlack = i%2 == 0;                
@@ -47,16 +35,32 @@ namespace Games.AI.AdversarialSearch.Checkers
                 {
                     var square = new Square(i, j, isBlack ? SquareColor.Black : SquareColor.Red);
 
-                    if (j < 3 && isBlack)
-                        square.Piece = new Piece(BoardPlayer.Player1);
-                    if (j > 4 && isBlack)
-                        square.Piece = new Piece(BoardPlayer.Player2);
+                    if (setStartingPositions)
+                    {
+                        if (j < 3 && isBlack)
+                            square.Piece = new Piece(BoardPlayer.Player1);
+                        if (j > 4 && isBlack)
+                            square.Piece = new Piece(BoardPlayer.Player2);
+                    }
 
                     tempSquares.Add(square);
                     isBlack = !isBlack;                    
                 }
             }
             squares = tempSquares.ToArray();     
+        }
+
+        /// <summary>
+        /// Constructor - used for cloning.
+        /// </summary>
+        /// <param name="internalSquares">The internal squares.</param>
+        /// <param name="level">The state level.</param>
+        /// <param name="printer">The printer.</param>
+        private Board(Square[] internalSquares, int level, IBoardPrinter printer = null)
+        {
+            Printer = printer ?? new BoardPrinter();
+            Level = level;
+            squares = internalSquares;
         }
 
         /// <summary>
@@ -84,6 +88,11 @@ namespace Games.AI.AdversarialSearch.Checkers
                 return square;
             }
         }
+
+        /// <summary>
+        /// Gets or sets the level.
+        /// </summary>        
+        public int Level { get; set; }
 
         /// <summary>
         /// Gets or sets the board printer.
@@ -148,7 +157,7 @@ namespace Games.AI.AdversarialSearch.Checkers
                     // see if square is our opponent - we might be able to make a jump
                     else if (target.Piece.Player == opponentPlayer)
                     {
-                        FindBoardJumps(this, square, opponentPlayer, moves);
+                        FindBoardJumps(this, square, opponentPlayer, moves, new List<Jump>());
                     }
                 }
             }
@@ -175,11 +184,11 @@ namespace Games.AI.AdversarialSearch.Checkers
         {
             // NOTE: we can't use [DomainSignature] because we have
             // to do a manual comparison of the board array values
-            if (this == obj)
+            if (ReferenceEquals(this, obj))
                 return true;
             if (!(obj is Board))
                 return false;
-            var other = (Board)obj;
+            var other = (Board)obj;            
             for (int i = 0; i < 9; i++)
             {
                 if (squares[i] != other.squares[i])
@@ -207,9 +216,9 @@ namespace Games.AI.AdversarialSearch.Checkers
         /// A new object that is a copy of this instance.
         /// </returns>
         public object Clone()
-        {
-            var newBoard = (Board)MemberwiseClone();
-            newBoard.squares = squares.Select(s => (Square)s.Clone()).ToArray();            
+        {            
+            var squareClones = squares.Select(s => (Square)s.Clone()).ToArray();
+            var newBoard = new Board(squareClones, Level, Printer);
             return newBoard;
         }
 
@@ -242,27 +251,39 @@ namespace Games.AI.AdversarialSearch.Checkers
         /// <param name="square">The square.</param>
         /// <param name="opponentPlayer">The opponent player.</param>
         /// <param name="moves">The list of available moves.</param>
-        private void FindBoardJumps(Board board, Square square, BoardPlayer opponentPlayer, List<Move> moves)
+        /// <param name="currentJumps">The list of current jumps being made (might be recursing down a multiple jump)</param>
+        private void FindBoardJumps(Board board, Square square, BoardPlayer opponentPlayer, List<Move> moves, List<Jump> currentJumps)
         {
             foreach (var direction in GetMovableDirections(square.Piece))
             {
-                var jumped = squares.SingleOrDefault(s => s.Piece != null && s.Piece.Player == opponentPlayer &&
+                var jumped = board.squares.SingleOrDefault(s => s.Piece != null && s.Piece.Player == opponentPlayer &&
                     s.Column == square.Column + (direction[0]*1) && s.Row == square.Row + (direction[1]*1));
-                var target = squares.SingleOrDefault(s => s.Piece == null &&
+                var target = board.squares.SingleOrDefault(s => s.Piece == null &&
                     s.Column == square.Column + (direction[0]*2) && s.Row == square.Row + (direction[1]*2));
 
                 // if either don't exist then we either went off the board
                 // or the spaces aren't valid
                 if (jumped == null || target == null)
                     continue;
+                
+                // create new jump
+                var jump = new Jump {At = square.Coordinate, MoveTo = target.Coordinate, Jumped = jumped.Coordinate};
 
-                // add to list
-                var jump = new Jump {At = square.Coordinate, MoveTo = target.Coordinate, Jumped = jumped.Coordinate};                
-                moves.Insert(0, jump); // add to beginning so that we try jumps first
+                // clone jump list (so modifying list doesn't affect recursing) and add jump
+                var currentJumpsClone = currentJumps.ToList();
+                currentJumpsClone.Add(jump);
+
+                Move move = jump;
+
+                // create a multiple jump if there's more than one
+                if (currentJumpsClone.Count > 1)
+                    move = new MultipleJump {Jumps = currentJumpsClone};
+
+                moves.Insert(0, move); // add to beginning so that we try jumps first
 
                 // find a potential next jump using a new board
                 var newBoard = jump.Execute(board);
-                FindBoardJumps(newBoard, newBoard[target.Coordinate], opponentPlayer, moves);
+                FindBoardJumps(newBoard, newBoard[target.Coordinate], opponentPlayer, moves, currentJumpsClone);
             }
         }
 

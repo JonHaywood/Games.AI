@@ -46,6 +46,7 @@
     <Compile Include="Checkers\CheckersProblem.cs" />
     <Compile Include="Checkers\Jump.cs" />
     <Compile Include="Checkers\Move.cs" />
+    <Compile Include="Checkers\MultipleJump.cs" />
     <Compile Include="Checkers\Piece.cs" />
     <Compile Include="Checkers\Square.cs" />
     <Compile Include="IAction.cs" />

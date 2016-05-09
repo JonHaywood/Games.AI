@@ -25,5 +25,10 @@ namespace Games.AI.AdversarialSearch.Checkers
             newBoard[Jumped].Piece = null;
             return newBoard;
         }
+
+        public override string ToString()
+        {
+            return string.Format("Piece at {0} will jump over {1} and move to {2}.", At, Jumped, MoveTo);
+        }
     }
 }

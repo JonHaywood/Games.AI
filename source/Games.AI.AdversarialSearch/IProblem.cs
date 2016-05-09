@@ -5,6 +5,11 @@ namespace Games.AI.AdversarialSearch
     public interface IProblem
     {
         /// <summary>
+        /// Gets the maximum level that is searchable for this problem.
+        /// </summary>
+        int MaxLevel { get; }
+
+        /// <summary>
         /// Gets the utility value for the state.
         /// </summary>
         /// <param name="state">The state.</param>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
 namespace Games.AI.AdversarialSearch
 {
@@ -10,13 +11,16 @@ namespace Games.AI.AdversarialSearch
 
         private IProblem Problem { get; set; }
         private AlgorithmStatistics Statistics { get; set; }
+        private StringBuilder DebugOutput { get; set; }
 
         public bool UseTranspositionTable { get; set; }
+        public bool Debug { get; set; }
 
         public AlgorithmResult SolveForBestAction(IProblem problem, IState state)
         {
             Problem = problem;
             Statistics = new AlgorithmStatistics();
+            DebugOutput = new StringBuilder();
             transpositionTable.Clear();
             var stopwach = Stopwatch.StartNew();
 
@@ -29,9 +33,10 @@ namespace Games.AI.AdversarialSearch
             // record the action associated with the successor so we 
             // can return.
             var successors = Problem.GetSuccessors(state);
+            PrintSuccessors(state, successors);
             foreach (var successor in successors)
             {
-                Statistics.VisitedStateCount++;
+                RecordStatistics(successor.ResultingState);
 
                 var vTemp = Math.Max(v, MinValue(successor.ResultingState, alpha, beta));
                 if (vTemp > v)
@@ -48,8 +53,8 @@ namespace Games.AI.AdversarialSearch
             Statistics.ElapsedTimeInSeconds = new TimeSpan(stopwach.ElapsedTicks).TotalSeconds;
 
             return action == null 
-                ? new AlgorithmResult(false, null, Statistics) 
-                : new AlgorithmResult(true, action, Statistics);
+                ? new AlgorithmResult(false, null, Statistics, DebugOutput.ToString()) 
+                : new AlgorithmResult(true, action, Statistics, DebugOutput.ToString());
         }
 
         /// <summary>
@@ -69,18 +74,32 @@ namespace Games.AI.AdversarialSearch
 
             var v = double.NegativeInfinity;
             var successors = Problem.GetSuccessors(state);
+            PrintSuccessors(state, successors);
             foreach (var successor in successors)
             {
-                Statistics.VisitedStateCount++;
+                RecordStatistics(successor.ResultingState);
 
-                v = Math.Max(v, MinValue(successor.ResultingState, alpha, beta));
+                if (UseTranspositionTable && transpositionTable.ContainsKey(successor.ResultingState))
+                {
+                    v = transpositionTable[successor.ResultingState];
+                }
+                else if (successor.ResultingState.Level > Problem.MaxLevel)
+                {
+                    // don't explore, leave v as is and check transposition table
+                    if (UseTranspositionTable && !transpositionTable.ContainsKey(state))
+                        transpositionTable[state] = v;
+                }
+                else
+                {
+                    v = Math.Max(v, MinValue(successor.ResultingState, alpha, beta));
+                    if (UseTranspositionTable && !transpositionTable.ContainsKey(state))
+                        transpositionTable[state] = v;
+                }
+
                 if (v >= beta)
                     return v;
                 alpha = Math.Max(alpha, v);
-            }
-
-            if (UseTranspositionTable && !transpositionTable.ContainsKey(state))
-                transpositionTable[state] = v;
+            }            
 
             return v;
         }
@@ -102,20 +121,61 @@ namespace Games.AI.AdversarialSearch
 
             var v = double.PositiveInfinity;
             var successors = Problem.GetSuccessors(state);
+            PrintSuccessors(state, successors);
             foreach (var successor in successors)
-            {
-                Statistics.VisitedStateCount++;
+            {                
+                RecordStatistics(successor.ResultingState);
 
-                v = Math.Min(v, MaxValue(successor.ResultingState, alpha, beta));
+                if (UseTranspositionTable && transpositionTable.ContainsKey(successor.ResultingState))
+                {
+                    v = transpositionTable[successor.ResultingState];
+                }
+                else if (successor.ResultingState.Level > Problem.MaxLevel)
+                {
+                    // don't explore, leave v as is and set transposition table
+                    if (UseTranspositionTable && !transpositionTable.ContainsKey(state))
+                        transpositionTable[state] = v;
+                }
+                else
+                {
+                    v = Math.Min(v, MaxValue(successor.ResultingState, alpha, beta));
+                    if (UseTranspositionTable && !transpositionTable.ContainsKey(state))
+                        transpositionTable[state] = v;
+                }
+
                 if (v <= alpha)
                     return v;
                 beta = Math.Min(beta, v);
-            }
-
-            if (UseTranspositionTable && !transpositionTable.ContainsKey(state))
-                transpositionTable[state] = v;
+            }            
 
             return v;
+        }
+
+        private void PrintSuccessors(IState state, List<Successor> successors)
+        {
+            if (!Debug)
+                return;
+
+            DebugOutput.AppendLine("--------------------------");
+            DebugOutput.AppendLine(string.Format("For state:\n{0}", state));
+            DebugOutput.AppendLine(string.Format("Found {0} successors.\n", successors.Count));
+            for (int i = 0; i < successors.Count; i++)
+            {
+                var successor = successors[i];
+
+                DebugOutput.AppendLine(string.Format("Successor {0}", i));
+                DebugOutput.AppendLine(string.Format("Action: {0}", successor.Action));
+                DebugOutput.AppendLine(string.Format("Resulting State:\n{0}\n", successor.ResultingState));
+            }
+            DebugOutput.AppendLine("--------------------------");
+        }
+
+        private void RecordStatistics(IState state)
+        {
+            Statistics.VisitedStateCount++;
+
+            if (state.Level > Statistics.MaxLevel)
+                Statistics.MaxLevel = state.Level;
         }
     }
 }

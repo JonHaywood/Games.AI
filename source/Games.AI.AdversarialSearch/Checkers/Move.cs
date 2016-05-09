@@ -37,5 +37,10 @@ namespace Games.AI.AdversarialSearch.Checkers
 
             return newBoard;
         }
+
+        public override string ToString()
+        {
+            return string.Format("Piece at {0} will move to {1}.", At, MoveTo);
+        }
     }
 }

@@ -8,14 +8,17 @@ namespace Games.AI.AdversarialSearch.Checkers
     {
         public CheckersProblem(
             BoardPlayer computerPlayer = BoardPlayer.Player1,
-            BoardPlayer playerWithFirstMove = BoardPlayer.Player1)
+            BoardPlayer playerWithFirstMove = BoardPlayer.Player1,
+            int maxLevel = 30)
         {
             ComputerPlayer = computerPlayer;
             PlayerWithFirstMove = playerWithFirstMove;
+            MaxLevel = maxLevel;
         }
 
         public BoardPlayer ComputerPlayer { get; set; }
         public BoardPlayer PlayerWithFirstMove { get; set; }
+        public int MaxLevel { get; set; }
 
         public double GetUtilityValue(IState state)
         {
@@ -53,6 +56,7 @@ namespace Games.AI.AdversarialSearch.Checkers
             foreach (var move in validMoves)
             {
                 var newBoard = move.Execute(board);
+                newBoard.Level++;
                 successors.Add(new Successor(move, newBoard));
             }
 

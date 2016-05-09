@@ -12,7 +12,7 @@ namespace Games.AI.AdversarialSearch.TicTacToe
     [Serializable]
     public class Board : ICloneable, IEnumerable<int>, IState
     {
-        private int[] board;
+        private readonly int[] board;
 
         /// <summary>
         /// Constructor - initializes empty board.
@@ -21,6 +21,17 @@ namespace Games.AI.AdversarialSearch.TicTacToe
         {
             Printer = new BoardPrinter();
             board = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };       
+        }
+
+        /// <summary>
+        /// Constructor - used for cloning.
+        /// </summary>
+        /// <param name="internalBoard">The internal board.</param>
+        /// <param name="printer">The printer.</param>
+        private Board(int[] internalBoard, IBoardPrinter printer = null)
+        {
+            Printer = printer ?? new BoardPrinter();
+            board = internalBoard;
         }
 
         /// <summary>
@@ -164,8 +175,7 @@ namespace Games.AI.AdversarialSearch.TicTacToe
         /// </returns>
         public override int GetHashCode()
         {
-            // see http://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order
-            // ReSharper disable once NonReadonlyFieldInGetHashCode
+            // see http://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order            
             return board.Aggregate(19, (current, i) => current * 31 + i.GetHashCode());
         }
 
@@ -177,8 +187,7 @@ namespace Games.AI.AdversarialSearch.TicTacToe
         /// </returns>
         public object Clone()
         {
-            var newBoard = (Board)MemberwiseClone();
-            newBoard.board = (int[])board.Clone();
+            var newBoard = new Board(board, Printer);            
             return newBoard;
         }
 
@@ -202,26 +211,6 @@ namespace Games.AI.AdversarialSearch.TicTacToe
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return board.GetEnumerator();
-        }
-
-        /// <summary>
-        /// Serializes the specified board.
-        /// </summary>
-        /// <param name="board">The board.</param>
-        /// <returns>Serialized board.</returns>
-        public static string Serialize(Board board)
-        {
-            return new BoardSerializer().Serialize(board);
-        }
-
-        /// <summary>
-        /// Deserializes the specified board string.
-        /// </summary>
-        /// <param name="boardStr">The board string.</param>
-        /// <returns>Board.</returns>
-        public static Board Deserialize(string boardStr)
-        {
-            return new BoardSerializer().Deserialize(boardStr);
         }
     }
 }

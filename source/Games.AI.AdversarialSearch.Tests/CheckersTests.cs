@@ -231,7 +231,7 @@ namespace Games.AI.AdversarialSearch.Tests
             board["h4"].Piece = new Piece(BoardPlayer.Player2);
             board["f2"].Piece = new Piece(BoardPlayer.Player1);
 
-            IProblem problem = new CheckersProblem(computerPlayer: BoardPlayer.Player1);
+            IProblem problem = new CheckersProblem();
             IAlgorithm algorithm = new MinimaxWithAlphaBetaPruningAlgorithm{UseTranspositionTable = true};
 
             var result = algorithm.SolveForBestAction(problem, board);

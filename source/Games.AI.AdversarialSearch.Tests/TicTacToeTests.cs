@@ -3,10 +3,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Games.AI.AdversarialSearch;
 using Games.AI.AdversarialSearch.TicTacToe;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Games.AI.AdversarialSearch.Tests
+namespace Games.AI.Tests
 {
     [TestClass]
     public class TicTacToeTests

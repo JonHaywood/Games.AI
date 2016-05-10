@@ -30,7 +30,7 @@ namespace Games.AI.AdversarialSearch.TicTacToe
         /// <param name="internalBoard">The internal board.</param>
         /// <param name="level">The state level.</param>
         /// <param name="printer">The printer.</param>
-        private Board(int[] internalBoard, int level, IBoardPrinter printer = null)
+        private Board(int[] internalBoard, int level, IPrinter<Board> printer = null)
         {
             Printer = printer ?? new BoardPrinter();
             Level = level;
@@ -64,7 +64,7 @@ namespace Games.AI.AdversarialSearch.TicTacToe
         /// <summary>
         /// Gets or sets the board printer.
         /// </summary>
-        public IBoardPrinter Printer { get; set; }
+        public IPrinter<Board> Printer { get; set; }
 
         /// <summary>
         /// Gets or sets the level.

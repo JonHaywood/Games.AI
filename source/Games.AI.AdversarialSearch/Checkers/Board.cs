@@ -56,7 +56,7 @@ namespace Games.AI.AdversarialSearch.Checkers
         /// <param name="internalSquares">The internal squares.</param>
         /// <param name="level">The state level.</param>
         /// <param name="printer">The printer.</param>
-        private Board(Square[] internalSquares, int level, IBoardPrinter printer = null)
+        private Board(Square[] internalSquares, int level, IPrinter<Board> printer = null)
         {
             Printer = printer ?? new BoardPrinter();
             Level = level;
@@ -97,7 +97,7 @@ namespace Games.AI.AdversarialSearch.Checkers
         /// <summary>
         /// Gets or sets the board printer.
         /// </summary>
-        public IBoardPrinter Printer { get; set; }
+        public IPrinter<Board> Printer { get; set; }
 
         /// <summary>
         /// Gets the squares.

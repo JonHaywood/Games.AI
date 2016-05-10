@@ -6,8 +6,8 @@
     <ProjectGuid>{7043767D-40EB-420B-94B5-F2C102D76B4B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Games.AI.AdversarialSearch.Tests</RootNamespace>
-    <AssemblyName>Games.AI.AdversarialSearch.Tests</AssemblyName>
+    <RootNamespace>Games.AI.Tests</RootNamespace>
+    <AssemblyName>Games.AI.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -51,6 +51,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CheckersTests.cs" />
+    <Compile Include="PegBoardTests.cs" />
     <Compile Include="TicTacToeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -58,6 +59,10 @@
     <ProjectReference Include="..\Games.AI.AdversarialSearch\Games.AI.AdversarialSearch.csproj">
       <Project>{60c1c60c-f56b-4d9a-b400-1e96e4348607}</Project>
       <Name>Games.AI.AdversarialSearch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Games.AI.UninformedSearch\Games.AI.UninformedSearch.csproj">
+      <Project>{7f74a7f5-1b04-4aad-b46e-3b21bb02cfb3}</Project>
+      <Name>Games.AI.UninformedSearch</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

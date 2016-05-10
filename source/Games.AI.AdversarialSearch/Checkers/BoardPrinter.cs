@@ -4,12 +4,7 @@ using System.Text;
 
 namespace Games.AI.AdversarialSearch.Checkers
 {
-    public interface IBoardPrinter
-    {
-        string Print(Board board);
-    }
-
-    public class BoardPrinter : IBoardPrinter
+    public class BoardPrinter : IPrinter<Board>
     {
         public string Print(Board board)
         {

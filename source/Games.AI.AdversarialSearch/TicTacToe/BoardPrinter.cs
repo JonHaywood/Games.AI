@@ -3,12 +3,7 @@ using System.Text;
 
 namespace Games.AI.AdversarialSearch.TicTacToe
 {
-    public interface IBoardPrinter
-    {
-        string Print(Board board);
-    }
-
-    public class BoardPrinter : IBoardPrinter
+    public class BoardPrinter : IPrinter<Board>
     {
         public BoardPrinter()
         {

@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using Games.AI.UninformedSearch;
 using Games.AI.UninformedSearch.PegBoard;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -56,6 +59,30 @@ namespace Games.AI.Tests
             Assert.IsTrue(result1);
             Assert.IsFalse(result2);
             Assert.AreEqual(expected, dictionary[board2]);
+        }
+
+        [TestMethod, TestCategory(Category)]
+        public void Solve_ValidConfiguration_ShouldSolve()
+        {
+            // create the boad            
+            var board = new Board();
+
+            // create the problem
+            IProblem problem = new PegBoardProblem(board);
+
+            // create the algorithm
+            IAlgorithm algorithm = new DepthFirstSearchAlgorithm();
+
+            // get all solutions
+            var result = algorithm.Solve(problem);
+
+            // make sure we have solutions
+            Assert.IsTrue(result.Solutions.Any());
+
+            // output best solution            
+            Solution bestSolution = result.Solutions.First(s => ((Board)s.FinalState).PegCount == result.Solutions.Min(s2 => ((Board)s2.FinalState).PegCount));
+            Debug.WriteLine(bestSolution);
+            Debug.WriteLine(result.Statistics);
         }
 
         private void WriteOutputFile(string contents)

@@ -98,6 +98,7 @@ namespace Games.AI.Tests
 
             // make sure we have solutions
             Assert.IsTrue(result.Solutions.Any());
+            Debug.WriteLine($"{result.Solutions.Count()} total solutions found.");
 
             // output best solution            
             Solution bestSolution = result.Solutions.First(s => ((Board)s.FinalState).PegCount == result.Solutions.Min(s2 => ((Board)s2.FinalState).PegCount));

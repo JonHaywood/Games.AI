@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IPrinter.cs" />
+    <Compile Include="ITransformable.cs" />
     <Compile Include="PegBoard\AdjacencyMatrix.cs" />
     <Compile Include="AlgorithmResult.cs" />
     <Compile Include="PegBoard\Board.cs" />

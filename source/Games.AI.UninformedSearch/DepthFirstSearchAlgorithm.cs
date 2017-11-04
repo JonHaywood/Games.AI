@@ -47,11 +47,10 @@ namespace Games.AI.UninformedSearch
             {
                 // keep a list of visited nodes. if we've seen this
                 // before then skip it, no need to explore it again
-                var uniqueCode = successor.ResultingState.GetHashCode();
-                if (visitedNodes.Contains(uniqueCode))
+                if (HasVisited(successor))
                     continue;
                 
-                visitedNodes.Add(uniqueCode);
+                visitedNodes.Add(successor.ResultingState.GetHashCode());
 
                 // add assignment to previous lsit
                 var newSuccessors = currentSuccessors.ToList(); // clone the successors so that it doesn't mess up recursion
@@ -62,6 +61,21 @@ namespace Games.AI.UninformedSearch
                 SolveRecursive(problem, initial, successor.ResultingState, newSuccessors);
                 recursionLevel--;
             }
+        }
+
+        private bool HasVisited(Successor successor)
+        {
+            var uniqueCode = successor.ResultingState.GetHashCode();
+            if (visitedNodes.Contains(uniqueCode))
+                return true;
+            
+            var transformable = successor.ResultingState as ITransformable;
+            if (transformable == null)
+                return false;
+
+            // check for transforms and see if those have been visited
+            var transforms = transformable.GetTransforms();
+            return transforms.Any(t => visitedNodes.Contains(t.GetHashCode()));
         }
     }
 }

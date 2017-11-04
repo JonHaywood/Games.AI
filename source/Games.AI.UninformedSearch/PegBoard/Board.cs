@@ -6,7 +6,7 @@ using Games.AI.Search;
 
 namespace Games.AI.UninformedSearch.PegBoard
 {
-    public class Board : IState
+    public class Board : IState, ITransformable
     {
         /// <summary>
         /// Represents transformation that rotates the board one-turn.
@@ -147,6 +147,18 @@ namespace Games.AI.UninformedSearch.PegBoard
         {
             // see http://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order            
             return vertices.OrderBy(v => v.Index).Aggregate(19, (current, i) => current * 31 + (i.HasPeg ? 1 : 0).GetHashCode());
+        }
+
+        /// <summary>
+        /// Generates transforms for rotating the board 1 and 2 times.
+        /// (3 turns returns it to the current state).
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<IState> GetTransforms()
+        {
+            var rotatedOnce = Rotate();
+            var rotatedTwice = rotatedOnce.Rotate();
+            return new IState[] { rotatedOnce, rotatedTwice};
         }
 
         /// <summary>

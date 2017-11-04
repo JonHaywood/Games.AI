@@ -13,7 +13,9 @@ namespace Games.AI.UninformedSearch.PegBoard
     /// </summary>
     public class BoardConfiguration
     {
-        public const string ResourceName = "Games.AI.UninformedSearch.PegBoard.BoardConfiguration.json";
+        private static BoardConfiguration CachedDefaultBoardConfiguration;
+        public const string DefaultBoardResourceName = "Games.AI.UninformedSearch.PegBoard.BoardConfiguration.Default.json";
+        public const string EmptyBoardResourceName = "Games.AI.UninformedSearch.PegBoard.BoardConfiguration.Empty.json";
         public const string SeparatorToken = " -> ";
         public const string HasPegToken = "1";
         public const string EmptyPegToken = "0";
@@ -71,9 +73,9 @@ namespace Games.AI.UninformedSearch.PegBoard
         /// Gets the default board configuration json.
         /// </summary>
         /// <returns></returns>
-        public static string GetDefaultJson()
+        public static string GetBoardJson(string resourceName)
         {            
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(ResourceName))
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
             // ReSharper disable once AssignNullToNotNullAttribute
             using (var reader = new StreamReader(stream)) 
             {
@@ -86,10 +88,20 @@ namespace Games.AI.UninformedSearch.PegBoard
         /// Gets the default 15-peg board configuration.
         /// </summary>
         /// <returns></returns>
-        public static BoardConfiguration GetDefault()
+        public static BoardConfiguration GetDefaultBoardConfiguration()
         {
-            var configuration = JsonConvert.DeserializeObject<BoardConfiguration>(GetDefaultJson());
-            return configuration;
+            if (CachedDefaultBoardConfiguration == null)
+                CachedDefaultBoardConfiguration = JsonConvert.DeserializeObject<BoardConfiguration>(GetBoardJson(DefaultBoardResourceName));
+            return CachedDefaultBoardConfiguration;
+        }
+
+        /// <summary>
+        /// Gets an empty 15-peg board configuration.
+        /// </summary>
+        /// <returns></returns>
+        public static BoardConfiguration GetEmptyBoardConfiguration()
+        {
+            return JsonConvert.DeserializeObject<BoardConfiguration>(GetBoardJson(EmptyBoardResourceName));
         }
     }
 }

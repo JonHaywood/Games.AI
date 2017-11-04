@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Games.AI.Search;
 
 namespace Games.AI.AdversarialSearch
 {

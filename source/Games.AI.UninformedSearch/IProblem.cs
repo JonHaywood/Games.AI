@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Games.AI.Search;
 
 namespace Games.AI.UninformedSearch
 {

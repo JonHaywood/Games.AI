@@ -1,5 +1,6 @@
 ﻿
 using System;
+using Games.AI.Search;
 
 namespace Games.AI.UninformedSearch.PegBoard
 {

@@ -1,4 +1,4 @@
-﻿namespace Games.AI.UninformedSearch
+﻿namespace Games.AI.Search
 {
     /// <summary>
     /// Interface which represents the current state of a node.

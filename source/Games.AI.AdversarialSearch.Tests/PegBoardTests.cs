@@ -62,6 +62,26 @@ namespace Games.AI.Tests
         }
 
         [TestMethod, TestCategory(Category)]
+        public void EmptyBoard_ConstructedCorrectly()
+        {
+            var board = Board.Empty;
+            Assert.AreEqual(0, board.PegCount);
+        }
+
+        [TestMethod, TestCategory(Category)]
+        public void Board_Rotate_WorksCorrectly()
+        {
+            var boardAt10 = NewBoardWithPegAt(10);
+            var boardAt14 = NewBoardWithPegAt(14);
+
+            var board = NewBoardWithPegAt(0).Rotate();
+            Assert.AreEqual(boardAt10, board);
+
+            board = board.Rotate();
+            Assert.AreEqual(boardAt14, board);
+        }
+
+        [TestMethod, TestCategory(Category)]
         public void Solve_ValidConfiguration_ShouldSolve()
         {
             // create the boad            
@@ -90,6 +110,18 @@ namespace Games.AI.Tests
             string file = Path.Combine(TestContext.TestResultsDirectory, "output.txt");
             File.WriteAllText(file, contents);
             TestContext.AddResultFile(file);
+        }
+
+        private Board NewBoardWithPegAt(int index)
+        {
+            var config = BoardConfiguration.GetEmptyBoardConfiguration();
+
+            var vertices = config.CreateVertexListFromVertices().ToList();
+            var adjacencyMatrix = config.CreateAdjacencyMatrixFromEdges();
+
+            vertices[index] = vertices[index].SetPeg(true);
+
+            return new Board(vertices, adjacencyMatrix);
         }
     }
 }

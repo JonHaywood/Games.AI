@@ -1,4 +1,4 @@
-﻿namespace Games.AI.UninformedSearch
+﻿namespace Games.AI.Search
 {
     /// <summary>
     /// Represents an action that is taken in a game that results in a 

@@ -19,13 +19,13 @@ namespace Games.AI.UninformedSearch.PegBoard
         /// Gets the index for the vertex.
         /// </summary>
         [DomainSignature]
-        public int Index { get; private set; }
+        public int Index { get; }
 
         /// <summary>
         /// Gets whether this coordinate has a peg or not.
         /// </summary>
         [DomainSignature]
-        public bool HasPeg { get; private set; }
+        public bool HasPeg { get; }
 
         /// <summary>
         /// Returns a new vertex with the peg set to the specified value.
@@ -49,7 +49,7 @@ namespace Games.AI.UninformedSearch.PegBoard
         /// </summary>
         public override string ToString()
         {
-            return string.Format("Index {0}, Has peg: {1}", Index, HasPeg);
+            return $"Index {Index}, Has peg: {HasPeg}";
         }
     }
 }

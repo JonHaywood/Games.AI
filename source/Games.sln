@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Games.AI.AdversarialSearch", "Games.AI.AdversarialSearch\Games.AI.AdversarialSearch.csproj", "{60C1C60C-F56B-4D9A-B400-1E96E4348607}"
 EndProject
@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{802FFC
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Games.AI.UninformedSearch", "Games.AI.UninformedSearch\Games.AI.UninformedSearch.csproj", "{7F74A7F5-1B04-4AAD-B46E-3B21BB02CFB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Games.AI.Search", "Games.AI.Search\Games.AI.Search.csproj", "{EE713BDE-7A9F-46E6-82F6-B625666DDA63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +36,10 @@ Global
 		{7F74A7F5-1B04-4AAD-B46E-3B21BB02CFB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F74A7F5-1B04-4AAD-B46E-3B21BB02CFB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F74A7F5-1B04-4AAD-B46E-3B21BB02CFB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE713BDE-7A9F-46E6-82F6-B625666DDA63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE713BDE-7A9F-46E6-82F6-B625666DDA63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE713BDE-7A9F-46E6-82F6-B625666DDA63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE713BDE-7A9F-46E6-82F6-B625666DDA63}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

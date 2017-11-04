@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Games.AI.Search;
 
 namespace Games.AI.AdversarialSearch.Checkers
 {

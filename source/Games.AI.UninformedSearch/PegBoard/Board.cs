@@ -2,14 +2,25 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Games.AI.Search;
 
 namespace Games.AI.UninformedSearch.PegBoard
 {
     public class Board : IState
     {
+        /// <summary>
+        /// Represents transformation that rotates the board one-turn.
+        /// </summary>
+        private static readonly int[] RotationTransformation = { 14, 9, 13, 5, 8, 12, 2, 4, 7, 11, 0, 1, 3, 6, 10 };
+
+        /// <summary>
+        /// Creates a new instance of an Board with no pegs.
+        /// </summary>
+        public static Board Empty => new Lazy<Board>(() => new Board(BoardConfiguration.GetEmptyBoardConfiguration())).Value;
+
         private readonly List<Vertex> vertices;
         private readonly AdjacencyMatrix adjacencyMatrix;
-
+     
         /// <summary>
         /// Initializes a new instance of the <see cref="Board"/> class.
         /// </summary>
@@ -20,9 +31,9 @@ namespace Games.AI.UninformedSearch.PegBoard
         public Board(IEnumerable<Vertex> vertices, AdjacencyMatrix adjacencyMatrix, int level = 0, IPrinter<Board> printer = null)
         {
             if (vertices == null)
-                throw new ArgumentNullException("vertices", "vertices is a required field.");
+                throw new ArgumentNullException(nameof(vertices), "vertices is a required field.");
             if (adjacencyMatrix == null)
-                throw new ArgumentNullException("adjacencyMatrix", "adjacencyMatrix is a required field.");            
+                throw new ArgumentNullException(nameof(adjacencyMatrix), "adjacencyMatrix is a required field.");            
             Level = level;
             Printer = printer ?? new BoardPrinter();
             this.vertices = vertices.ToList();
@@ -42,13 +53,13 @@ namespace Games.AI.UninformedSearch.PegBoard
         /// Initializes a new instance of the <see cref="Board"/> class using
         /// the default board configuration.
         /// </summary>
-        public Board() : this(BoardConfiguration.GetDefault())
+        public Board() : this(BoardConfiguration.GetDefaultBoardConfiguration())
         { }
 
         /// <summary>
         /// Gets or sets the level.
         /// </summary>
-        public int Level { get; set; }
+        public int Level { get; }
 
         /// <summary>
         /// Gets or sets the board printer.
@@ -67,26 +78,17 @@ namespace Games.AI.UninformedSearch.PegBoard
         /// <summary>
         /// Gets the vertex count.
         /// </summary>
-        public int VertexCount
-        {
-            get { return vertices.Count; }
-        }
+        public int VertexCount => vertices.Count;
 
         /// <summary>
         /// Gets the adjecency matrix.
         /// </summary>
-        public AdjacencyMatrix AdjacencyMatrix
-        {
-            get { return adjacencyMatrix; }
-        }
+        public AdjacencyMatrix AdjacencyMatrix => adjacencyMatrix;
 
         /// <summary>
         /// Gets the board vertices.
         /// </summary>        
-        public IReadOnlyList<Vertex> Vertices
-        {
-            get { return vertices.AsReadOnly(); }
-        }
+        public IReadOnlyList<Vertex> Vertices => vertices.AsReadOnly();
 
         /// <summary>
         /// Gets whether there is a peg at the given index.
@@ -164,11 +166,11 @@ namespace Games.AI.UninformedSearch.PegBoard
 
             // make sure the move is valid
             if (!spaces[currentIndex].HasPeg)
-                throw new ArgumentNullException("jump", "current must be space with a peg.");
+                throw new ArgumentNullException(nameof(jump), "current must be space with a peg.");
             if (!spaces[jumpedIndex].HasPeg)
-                throw new ArgumentNullException("jump", "jumped must be space with a peg.");
+                throw new ArgumentNullException(nameof(jump), "jumped must be space with a peg.");
             if (spaces[destinationIndex].HasPeg)
-                throw new ArgumentNullException("jump",  "destination must be an empty space.");
+                throw new ArgumentNullException(nameof(jump),  "destination must be an empty space.");
 
             // make a clone of all spaces
             var newSpaces = spaces.Select(v => (Vertex)v.Clone()).ToArray();
@@ -179,7 +181,17 @@ namespace Games.AI.UninformedSearch.PegBoard
             newSpaces[destinationIndex] = newSpaces[destinationIndex].SetPeg(true);
 
             // create a new board
-            return new Board(newSpaces, adjacencyMatrix, Level);
+            return new Board(newSpaces, adjacencyMatrix, Level + 1);
+        }
+
+        /// <summary>
+        /// Rotates the board one turn.
+        /// </summary>
+        /// <returns></returns>
+        public Board Rotate()
+        {
+            var newSpaces = RotationTransformation.Select((transformationIndex, i) => new Vertex(i, vertices[transformationIndex].HasPeg)).ToList();
+            return new Board(newSpaces, adjacencyMatrix);
         }
 
         /// <summary>

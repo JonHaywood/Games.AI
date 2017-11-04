@@ -1,4 +1,6 @@
 ﻿
+using Games.AI.Search;
+
 namespace Games.AI.AdversarialSearch
 {
     /// <summary>

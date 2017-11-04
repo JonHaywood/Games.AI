@@ -2,6 +2,11 @@
 
 namespace Games.AI.UninformedSearch.PegBoard
 {
+    /// <summary>
+    /// Represents an adjacency matrix where if the value of two indices
+    /// is greater or equal to zero then there is an edge between those
+    /// two indices. If otherwise then there is not a traversable edge.
+    /// </summary>
     public class AdjacencyMatrix
     {
         private readonly int[,] matrix;
@@ -13,19 +18,16 @@ namespace Games.AI.UninformedSearch.PegBoard
         public AdjacencyMatrix(int[,] matrix)
         {
             if (matrix == null)
-                throw new ArgumentNullException("matrix", "matrix is a required field.");
+                throw new ArgumentNullException(nameof(matrix), "matrix is a required field.");
             if (matrix.GetLength(0) != matrix.GetLength(1))
-                throw new ArgumentException("matrix must be square.", "matrix");
+                throw new ArgumentException("matrix must be square.", nameof(matrix));
             this.matrix = matrix;
         }
 
         /// <summary>
         /// Gets the matrix size.
         /// </summary>        
-        public int Size
-        {
-            get { return matrix.GetLength(0); }
-        }
+        public int Size => matrix.GetLength(0);
 
         /// <summary>
         /// Determines whether the specified path from one index to another has an edge.
@@ -48,13 +50,9 @@ namespace Games.AI.UninformedSearch.PegBoard
             get
             {
                 if (fromIndex < 0 || fromIndex >= matrix.GetLength(0))
-                    throw new ArgumentException(
-                        string.Format("{0} is an invalid 'from index'. Index must be between 0 and {1}.", fromIndex,
-                            matrix.GetLength(0)));
+                    throw new ArgumentException($"{fromIndex} is an invalid 'from index'. Index must be between 0 and {matrix.GetLength(0)}.");
                 if (toIndex < 0 || toIndex >= matrix.GetLength(0))
-                    throw new ArgumentException(
-                        string.Format("{0} is an invalid 'to index'. Index must be between 0 and {1}.", toIndex,
-                            matrix.GetLength(0)));
+                    throw new ArgumentException($"{toIndex} is an invalid 'to index'. Index must be between 0 and {matrix.GetLength(0)}.");
                 return matrix[fromIndex, toIndex];
             }
         }

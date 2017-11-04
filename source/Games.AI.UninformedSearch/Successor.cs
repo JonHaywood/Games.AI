@@ -1,4 +1,6 @@
-﻿namespace Games.AI.UninformedSearch
+﻿using Games.AI.Search;
+
+namespace Games.AI.UninformedSearch
 {
     /// <summary>
     /// Represents a successor to a given state. Includes the resulting state

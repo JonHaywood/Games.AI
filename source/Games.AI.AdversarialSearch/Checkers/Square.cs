@@ -1,3 +1,4 @@
+using Games.AI.Search;
 using System;
 
 namespace Games.AI.AdversarialSearch.Checkers

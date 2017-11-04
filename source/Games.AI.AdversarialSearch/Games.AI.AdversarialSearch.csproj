@@ -41,7 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlgorithmResult.cs" />
-    <Compile Include="BaseObject.cs" />
     <Compile Include="Checkers\Board.cs" />
     <Compile Include="Checkers\BoardPrinter.cs" />
     <Compile Include="Checkers\CheckersProblem.cs" />

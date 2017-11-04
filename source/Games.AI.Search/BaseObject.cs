@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Games.AI.AdversarialSearch
+namespace Games.AI.Search
 {
     /// <summary>
     /// Facilitates indicating which property(s) describe the unique signature of an 

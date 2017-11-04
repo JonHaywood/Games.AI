@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseObject.cs" />
     <Compile Include="IAction.cs" />
     <Compile Include="IState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

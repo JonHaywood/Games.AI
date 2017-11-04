@@ -49,7 +49,6 @@
     <Compile Include="IPrinter.cs" />
     <Compile Include="PegBoard\AdjacencyMatrix.cs" />
     <Compile Include="AlgorithmResult.cs" />
-    <Compile Include="BaseObject.cs" />
     <Compile Include="PegBoard\Board.cs" />
     <Compile Include="PegBoard\BoardConfiguration.cs" />
     <Compile Include="PegBoard\BoardPrinter.cs" />
